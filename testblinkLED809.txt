@@ -1,0 +1,42 @@
+import time
+import random
+import board
+import neopixel
+
+# Pin connected to the NeoPixel data-in
+PIXEL_PIN = board.D18        # GPIO18 (physical pin 12)
+NUM_PIXELS = 8               # Your 8-LED strip
+BRIGHTNESS = 0.3
+
+pixels = neopixel.NeoPixel(
+    PIXEL_PIN,
+    NUM_PIXELS,
+    brightness=BRIGHTNESS,
+    auto_write=False,
+    pixel_order=neopixel.GRB
+)
+
+def random_color():
+    return (
+        random.randint(0, 255),
+        random.randint(0, 255),
+        random.randint(0, 255)
+    )
+
+try:
+    while True:
+        # Pick a random LED
+        idx = random.randint(0, NUM_PIXELS - 1)
+
+        # Turn everything off first
+        pixels.fill((0, 0, 0))
+
+        # Light one random LED with a random color
+        pixels[idx] = random_color()
+
+        pixels.show()
+        time.sleep(0.15)  # speed of blinking
+
+except KeyboardInterrupt:
+    pixels.fill((0, 0, 0))
+    pixels.show()
