@@ -1,42 +1,33 @@
-import time
-import random
-import board
-import neopixel
+#include <Adafruit_NeoPixel.h>
 
-# Pin connected to the NeoPixel data-in
-PIXEL_PIN = board.D18        # GPIO18 (physical pin 12)
-NUM_PIXELS = 8               # Your 8-LED strip
-BRIGHTNESS = 0.3
+#define PIN 2          // D1 Mini pin D4
+#define NUM_LEDS 8     // Your 8‑LED strip
 
-pixels = neopixel.NeoPixel(
-    PIXEL_PIN,
-    NUM_PIXELS,
-    brightness=BRIGHTNESS,
-    auto_write=False,
-    pixel_order=neopixel.GRB
-)
+Adafruit_NeoPixel strip(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 
-def random_color():
-    return (
-        random.randint(0, 255),
-        random.randint(0, 255),
-        random.randint(0, 255)
-    )
+void setup() {
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
+  randomSeed(analogRead(A0)); // Better randomness
+}
 
-try:
-    while True:
-        # Pick a random LED
-        idx = random.randint(0, NUM_PIXELS - 1)
+void loop() {
+  // Pick a random LED
+  int idx = random(0, NUM_LEDS);
 
-        # Turn everything off first
-        pixels.fill((0, 0, 0))
+  // Pick a random color
+  uint32_t color = strip.Color(
+    random(0, 255),
+    random(0, 255),
+    random(0, 255)
+  );
 
-        # Light one random LED with a random color
-        pixels[idx] = random_color()
+  // Turn everything off
+  strip.clear();
 
-        pixels.show()
-        time.sleep(0.15)  # speed of blinking
+  // Light the random LED
+  strip.setPixelColor(idx, color);
+  strip.show();
 
-except KeyboardInterrupt:
-    pixels.fill((0, 0, 0))
-    pixels.show()
+  delay(150); // Blink speed
+}
