@@ -1,0 +1,44 @@
+import time
+import random
+import board
+import neopixel
+
+PIXEL_PIN = board.D18
+NUM_PIXELS = 8
+BRIGHTNESS = 0.4
+
+pixels = neopixel.NeoPixel(
+    PIXEL_PIN,
+    NUM_PIXELS,
+    brightness=BRIGHTNESS,
+    auto_write=False,
+    pixel_order=neopixel.GRB
+)
+
+def random_color():
+    # More dramatic colour variation
+    return (
+        random.randint(0, 255),
+        random.randint(0, 255),
+        random.randint(0, 255)
+    )
+
+try:
+    while True:
+        pixels.fill((0, 0, 0))
+
+        # Light between 2 and 5 LEDs at once
+        count = random.randint(2, 5)
+
+        for _ in range(count):
+            idx = random.randint(0, NUM_PIXELS - 1)
+            pixels[idx] = random_color()
+
+        pixels.show()
+
+        # Very fast blinking
+        time.sleep(random.uniform(0.03, 0.12))
+
+except KeyboardInterrupt:
+    pixels.fill((0, 0, 0))
+    pixels.show()
